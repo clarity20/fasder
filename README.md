@@ -1,6 +1,6 @@
 # Fasder
 
-A descendant of Wei Dai's [fasd] (http://github.com/vv/fasd) project offering
+A descendant of Wei Dai's [fasd] (https://github.com/clvv/fasd) project offering
 improved performance on Cygwin/Windows and (eventually) more... 
 
 ### Requirements
