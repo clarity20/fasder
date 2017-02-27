@@ -24,4 +24,4 @@ fruit waiting to be picked.
 might wish to address here.
 * Merge the original project's README into this file, making edits wherever
 they seem appropriate.
-
+* Rename all components from "fasd" to "fasder."
