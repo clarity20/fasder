@@ -33,6 +33,10 @@ fasd() {
   # make zsh do word splitting inside this function
   [ "$ZSH_VERSION" ] && emulate sh && setopt localoptions
 
+  shopt -p extglob
+  wasGlobOff=$?
+  if ((wasGlobOff)); then shopt -s extglob; fi
+
   case $1 in
   --init) shift
     while [ "$1" ]; do
@@ -840,4 +844,6 @@ case $- in
       fasd "$@"
     fi;;
 esac
+
+if ((wasGlobOff)); then shopt -u extglob; fi
 
