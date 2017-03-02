@@ -503,6 +503,8 @@ EOS
       done
     fi
 
+    unset ranks times
+
     # in case of failure, fall back on the preexisting data
     # TODO: replace $? with a cumulative error counter
     if [ $? -ne 0 -a -f "$dataFile" ]; then
@@ -678,9 +680,10 @@ EOS
           if ((fRk>0)); then ranks[$path]+="."${fRk%%+(0)}; fi
           printf "%-10s %s\n" ${ranks[$path]} $path
         done
-      ;;
-    esac
+        ;;
+      esac
     
+      unset ranks times
     ;;
 
   --backend)
