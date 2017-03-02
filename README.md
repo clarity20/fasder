@@ -25,3 +25,4 @@ might wish to address here.
 * Merge the original project's README into this file, making edits wherever
 they seem appropriate.
 * Rename all components from "fasd" to "fasder."
+* Check the main script for indentation and/or markers to facilitate folding
