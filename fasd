@@ -7,7 +7,7 @@
 # been rewritten.
 
 # Copyright (C) 2011, 2012 by Wei Dai. All rights reserved.
-# Copyright (C) 2017 by Michael Wood. All rights reserved.
+# Copyright (C) 2016, 2017 by Michael Wood. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -33,37 +33,38 @@ fasd() {
   # make zsh do word splitting inside this function
   [ "$ZSH_VERSION" ] && emulate sh && setopt localoptions
 
-  shopt -p extglob
+  shopt -p extglob > /dev/null
   wasGlobOff=$?
   if ((wasGlobOff)); then shopt -s extglob; fi
-
+ 
   case $1 in
   --init) shift
-    while [ "$1" ]; do
+    while [[ -n "$1" ]]; do
       case $1 in
         env)
+time {
           { # source rc files if present
-          [ -s "/etc/fasdrc" ] && . "/etc/fasdrc"
-          [ -s "$HOME/.fasdrc" ] && . "$HOME/.fasdrc"
+          [[ -s "/etc/fasdrc" ]] && . "/etc/fasdrc"
+          [[ -s "$HOME/.fasdrc" ]] && . "$HOME/.fasdrc"
 
           # set default options
-          [ -z "$_FASD_DATA" ] && _FASD_DATA="$HOME/.fasd"
-          [ -z "$_FASD_BLACKLIST" ] && _FASD_BLACKLIST="--help"
-          [ -z "$_FASD_SHIFT" ] && _FASD_SHIFT="sudo busybox"
-          [ -z "$_FASD_IGNORE" ] && _FASD_IGNORE="fasd ls echo"
-          [ -z "$_FASD_SINK" ] && _FASD_SINK=/dev/null
-          [ -z "$_FASD_TRACK_PWD" ] && _FASD_TRACK_PWD=1
-          [ -z "$_FASD_MAX" ] && _FASD_MAX=2000
-          [ -z "$_FASD_BACKENDS" ] && _FASD_BACKENDS=native
-          [ -z "$_FASD_FUZZY" ] && _FASD_FUZZY=2
-          [ -z "$_FASD_VIMINFO" ] && _FASD_VIMINFO="$HOME/.viminfo"
-          [ -z "$_FASD_RECENTLY_USED_XBEL" ] && \
+          [[ -z "$_FASD_DATA" ]] && _FASD_DATA="$HOME/.fasd"
+          [[ -z "$_FASD_BLACKLIST" ]] && _FASD_BLACKLIST="--help"
+          [[ -z "$_FASD_SHIFT" ]] && _FASD_SHIFT="sudo busybox"
+          [[ -z "$_FASD_IGNORE" ]] && _FASD_IGNORE="fasd ls echo"
+          [[ -z "$_FASD_SINK" ]] && _FASD_SINK=/dev/null
+          [[ -z "$_FASD_TRACK_PWD" ]] && _FASD_TRACK_PWD=1
+          [[ -z "$_FASD_MAX" ]] && _FASD_MAX=2000
+          [[ -z "$_FASD_BACKENDS" ]] && _FASD_BACKENDS=native
+          [[ -z "$_FASD_FUZZY" ]] && _FASD_FUZZY=2
+          [[ -z "$_FASD_VIMINFO" ]] && _FASD_VIMINFO="$HOME/.viminfo"
+          [[ -z "$_FASD_RECENTLY_USED_XBEL" ]] && \
             _FASD_RECENTLY_USED_XBEL="$HOME/.local/share/recently-used.xbel"
 
-          if [ -z "$_FASD_AWK" ]; then
+          if [[ -z "$_FASD_AWK" ]]; then
             # awk preferences
             local awk; for awk in mawk gawk original-awk nawk awk; do
-              $awk "" && _FASD_AWK=$awk && break
+              [[ -x $awk ]] && _FASD_AWK=$awk && break
             done
           fi
 
@@ -85,6 +86,7 @@ fasd() {
             newDataFile=$_FASD_DATA.1
           fi
         } >> "${_FASD_SINK:-/dev/null}" 2>&1
+}
         ;;
 
       auto) cat <<EOS
