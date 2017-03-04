@@ -38,15 +38,15 @@ fasd() {
   if ((wasGlobOff)); then shopt -s extglob; fi
  
   case $1 in
-  --init) shift
+  --init)        # Initialize the fasd subsystem {{{1
+    shift
     while [[ -n "$1" ]]; do
       case $1 in
-        env)
-time {
+        env)                  # Environment / global settings {{{2
           { # source rc files if present
           [[ -s "/etc/fasdrc" ]] && . "/etc/fasdrc"
           [[ -s "$HOME/.fasdrc" ]] && . "$HOME/.fasdrc"
-
+  
           # set default options
           [[ -z "$_FASD_DATA" ]] && _FASD_DATA="$HOME/.fasd"
           [[ -z "$_FASD_BLACKLIST" ]] && _FASD_BLACKLIST="--help"
@@ -60,14 +60,14 @@ time {
           [[ -z "$_FASD_VIMINFO" ]] && _FASD_VIMINFO="$HOME/.viminfo"
           [[ -z "$_FASD_RECENTLY_USED_XBEL" ]] && \
             _FASD_RECENTLY_USED_XBEL="$HOME/.local/share/recently-used.xbel"
-
+  
           if [[ -z "$_FASD_AWK" ]]; then
             # awk preferences
             local awk; for awk in mawk gawk original-awk nawk awk; do
               [[ -x $awk ]] && _FASD_AWK=$awk && break
             done
           fi
-
+  
           # set up a rotating pair of _FASD_DATA files
           # so we can avoid issuing mktemp/mv/rm/cp commands
           if [ -f $_FASD_DATA.1 -a -f $_FASD_DATA.2 ]; then
@@ -86,10 +86,10 @@ time {
             newDataFile=$_FASD_DATA.1
           fi
         } >> "${_FASD_SINK:-/dev/null}" 2>&1
-}
         ;;
-
-      auto) cat <<EOS
+ 
+      auto)                 # Auto-install features based on shell type {{{2
+        cat <<EOS
 { if [ "\$ZSH_VERSION" ] && compctl; then # zsh
     eval "\$(fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install \\
       zsh-wcomp zsh-wcomp-install)"
@@ -103,7 +103,8 @@ time {
 EOS
         ;;
 
-      posix-alias) cat <<EOS
+      posix-alias)          # command aliases for POSIX shells {{{2
+        cat <<EOS
 alias a='fasd -a'
 alias s='fasd -si'
 alias sd='fasd -sid'
@@ -126,7 +127,8 @@ alias zz='fasd_cd -d -i'
 EOS
         ;;
 
-      tcsh-alias) cat <<EOS
+      tcsh-alias)           # command aliases for tcsh {{{2
+        cat <<EOS
 ;alias a 'fasd -a';
 alias s 'fasd -si';
 alias sd 'fasd -sid';
@@ -137,7 +139,8 @@ alias z 'cd "\`fasd -d -e printf\\ %s \\!*\`" >& /dev/null || fasd -d';
 EOS
         ;;
 
-      zsh-hook) cat <<EOS
+      zsh-hook)             # zsh prompt hook {{{2
+        cat <<EOS
 # add zsh hook
 _fasd_preexec() {
   { eval "fasd --proc \$2"; } >> "$_FASD_SINK" 2>&1
@@ -148,7 +151,8 @@ add-zsh-hook preexec _fasd_preexec
 EOS
         ;;
 
-      bash-hook) cat <<EOS
+      bash-hook)            # bash prompt hook {{{2
+        cat <<EOS
 _fasd_prompt_func() {
     local cmd=\$(history 1)
     [[ "\$cmd" =~ ^[\ ]*[0-9]*[\ ]*(.*) ]] && cmd=\${BASH_REMATCH[1]}
@@ -164,7 +168,8 @@ esac
 EOS
         ;;
 
-      posix-hook) cat <<EOS
+      posix-hook)           # POSIX prompt hook {{{2
+        cat <<EOS
 _fasd_ps1_func() {
   { eval "fasd --proc \$(fc -nl -1)"; } \\
     >> "$_FASD_SINK" 2>&1
@@ -177,14 +182,16 @@ esac
 EOS
         ;;
 
-      tcsh-hook) cat <<EOS
+      tcsh-hook)            # tcsh prompt hook {{{2
+        cat <<EOS
 set pprecmd="\`alias precmd\`";
 alias precmd '\$pprecmd; eval "fasd --proc \`history -h 1\`" >& /dev/null';
 EOS
-
+      
         ;;
 
-      zsh-ccomp) cat <<EOS
+      zsh-ccomp)            # zsh command-complete settings {{{2
+        cat <<EOS
 # zsh command mode completion
 _fasd_zsh_cmd_complete() {
   local compl
@@ -196,7 +203,8 @@ _fasd_zsh_cmd_complete() {
 EOS
         ;;
 
-      zsh-wcomp) cat <<EOS
+      zsh-wcomp)            # zsh word-complete settings {{{2
+        cat <<EOS
 (( \$+functions[compdef] )) && {
   # zsh word mode completion
   _fasd_zsh_word_complete() {
@@ -233,7 +241,8 @@ EOS
 EOS
         ;;
 
-      zsh-ccomp-install) cat <<EOS
+      zsh-ccomp-install)    # zsh command-complete installation {{{2
+        cat <<EOS
 # enable command mode completion
 compctl -U -K _fasd_zsh_cmd_complete -V fasd -x 'C[-1,-*e],s[-]n[1,e]' -c - \\
   'c[-1,-A][-1,-D]' -f -- fasd fasd_cd
@@ -241,7 +250,8 @@ compctl -U -K _fasd_zsh_cmd_complete -V fasd -x 'C[-1,-*e],s[-]n[1,e]' -c - \\
 EOS
         ;;
 
-      zsh-wcomp-install) cat <<EOS
+      zsh-wcomp-install)    # zsh word-complete installation {{{2
+        cat <<EOS
 (( \$+functions[compdef] )) && {
   # enable word mode completion
   orig_comp="\$(zstyle -L ':completion:\\*' completer 2>> "$_FASD_SINK")"
@@ -259,7 +269,8 @@ EOS
 EOS
         ;;
 
-      bash-ccomp) cat <<EOS
+      bash-ccomp)           # bash command-complete settings {{{2
+        cat <<EOS
 # bash command mode completion
 _fasd_bash_cmd_complete() {
   # complete command after "-e"
@@ -289,18 +300,20 @@ _fasd_bash_hook_cmd_complete() {
 EOS
         ;;
 
-      bash-ccomp-install) cat <<EOS
+      bash-ccomp-install)   # bash command-complete installation {{{2
+        cat <<EOS
 # enable bash command mode completion
 _fasd_bash_hook_cmd_complete fasd a s d f sd sf z zz
 
 EOS
         ;;
-      esac; shift
-    done
-    ;;
+      # }}}2
+            esac; shift
+          done
+          ;;
 
+  --word-complete-trigger)   # zsh word completion helper {{{1
   # if "$_fasd_cur" or "$2" is a query, then output shell code to be eval'd
-  --word-complete-trigger)
     shift; [ "$2" ] && local _fasd_cur="$2" || return
     case $_fasd_cur in
       ,*) printf %s\\n "$1 e $_fasd_cur";;
@@ -312,7 +325,8 @@ EOS
     esac
     ;;
 
-  --proc) shift # process commands
+  --proc)        # Preprocess commands against configuration settings {{{1
+    shift
 
     # "sanitize" the command, removing shell operators and metacharacters
     local y="$*"$'\n'
@@ -341,11 +355,11 @@ EOS
     case " $_FASD_IGNORE " in
       *\ $1\ *) return;;
     esac
-
     shift; fasd --add "$@" # add all arguments except command
     ;;
 
-  --add|-A) shift # add entries
+  --add|-A)      # Add entries to the DB {{{1
+    shift
     # stop if we don't own the current data file or $_FASD_RO is set
     [ -f "$dataFile" -a ! -O "$dataFile" ] || [ "$_FASD_RO" ] && return
 
@@ -438,7 +452,7 @@ EOS
            [[ -n $total_fRank ]] && rank+=.$total_fRank
            ranks[$fname]=$rank
            times[$fname]=$now
-   
+
          else
            # Populate the data arrays
            rank=$iRank
@@ -456,8 +470,8 @@ EOS
            fCount=${fCount:1}
            ((iCount++))
          fi
-        fi
-      }
+       fi
+    }
 
     mapfile -t -c 1 -C populate_ranks_and_times < "$dataFile"
 
@@ -514,7 +528,8 @@ EOS
     fi
     ;;
 
-  --delete|-D) shift # delete entries
+  --delete|-D)   # Delete entries from the DB {{{1
+    shift
     # stop if we don't own the current data file or $_FASD_RO is set
     [ -f "$dataFile" -a ! -O "$dataFile" ] || [ "$_FASD_RO" ] && return
 
@@ -533,7 +548,8 @@ EOS
     fi
     ;;
 
-  --query) shift # query the db, --query [$typ ["$fnd" [$mode]]]
+  --query)       # Query the db, --query [$typ ["$fnd" [$mode]]] {{{1
+    shift
     [ -f "$dataFile" ] || return # no db yet
     [ "$1" ] && local typ="$1"
     [ "$2" ] && local fnd="$2"
@@ -688,7 +704,7 @@ EOS
       unset ranks times
     ;;
 
-  --backend)
+  --backend)     # Populate DB from backend data sources {{{1
     case $2 in
       native)
         backendBuffer="$(<"$dataFile")"
@@ -731,15 +747,27 @@ EOS
     esac
     ;;
 
-  *) # parsing logic and processing
+  *)             # General argument parsing logic {{{1
     local fnd= last= _FASD_BACKENDS="$_FASD_BACKENDS" _fasd_data= comp= exec=
     while [ "$1" ]; do
       case $1 in
-      --complete) [ "$2" = "--" ] && shift; set -- $2; local lst=1 r=r comp=1;;
-      --query|--add|--delete|-A|-D) fasd "$@"; return $?;;
-      --version) [ -z "$comp" ] && echo "1.0.1" && return;;
-      --) while [ "$2" ]; do shift; fnd="$fnd $1"; last="$1"; done;;
-      -*) local o="${1#-}"; while [ "$o" ]; do
+      --complete)   # {{{2
+          [ "$2" = "--" ] && shift
+          set -- $2
+          local lst=1 r=r comp=1;;
+      --query|--add|--delete|-A|-D)   # {{{2
+          fasd "$@"
+          return $?;;
+      --version)    # {{{2
+          [ -z "$comp" ] && echo "1.0.1" && return;;
+      --)           # Universal values indicator {{{2
+          while [ "$2" ]; do
+              shift
+              fnd="$fnd $1"
+              last="$1"
+          done;;
+      -*)           # Single-letter option flags {{{2
+          local o="${1#-}"; while [ "$o" ]; do
           case $o in
           s*) local show=1;;
           l*) local lst=1;;
@@ -791,8 +819,12 @@ fasd [-A|-D] [paths ...]
     -A    add paths
     -D    delete paths" >&2 && return;;
         esac; o="${o#?}"; done;;
-      *) fnd="$fnd $1"; last="$1";;
-    esac; shift; done
+      *)            # Value arguments {{{2
+          fnd="$fnd $1"
+          last="$1";; # }}}2
+      esac
+      shift
+    done
 
     # guess whether the last query is selected from tab completion
     case $last in
@@ -836,7 +868,7 @@ fasd [-A|-D] [paths ...]
       [ -z "$exec" ] && exec='printf %s\n'
       $exec "$res"
     fi
-    ;;
+    ;; # }}}1
   esac
 }
 
