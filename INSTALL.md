@@ -1,6 +1,6 @@
-Fasd is a self-contained posix shell script that can be either sourced or
-executed. A Makefile is provided to install `fasd` and `fasd.1` to desired
-places.
+Fasder is a self-contained posix shell script that can be either sourced or
+executed. A Makefile is provided to install `fasder` and `fasder.1` in 
+the desired locations.
 
 
 System-wide install:
@@ -11,20 +11,20 @@ Install to $HOME:
 
     PREFIX=$HOME make install
 
-Or alternatively you can just copy `fasd` to anywhere you like.
+Or alternatively you can just copy `fasder` anywhere you like.
 
-To get fasd working in a shell, some initialization code must be run. Put the
-line below in your shell rc.
+To get fasder working in a shell, some initialization code must be run. Put the
+following line in your shell rc.
 
-    eval "$(fasd --init auto)"
+    eval "$(fasder --init auto)"
 
-This will setup a command hook that executes on every command and advanced tab
+This will set up a command hook that executes on every command and advanced tab
 completion for zsh and bash.
 
 If you want more control over what gets into your shell environment, you can
-pass customized set of arguments to `fasd --init`.
+pass a custom set of arguments to `fasder --init`:
 
-    zsh-hook             # define _fasd_preexec and add it to zsh preexec array
+    zsh-hook             # define _fasder_preexec and add it to zsh preexec array
     zsh-ccomp            # zsh command mode completion definitions
     zsh-ccomp-install    # setup command mode completion for zsh
     zsh-wcomp            # zsh word mode completion definitions
@@ -39,34 +39,34 @@ pass customized set of arguments to `fasd --init`.
 
 Example for a minimal zsh setup (no tab completion):
 
-    eval "$(fasd --init posix-alias zsh-hook)"
+    eval "$(fasder --init posix-alias zsh-hook)"
 
 Note that this method will slightly increase your shell start-up time, since
-calling binaries has overhead. You can cache fasd init code if you want minimal
+calling binaries has overhead. You can cache fasder init code if you want minimal
 overhead. Example code for bash (to be put into .bashrc):
 
-    fasd_cache="$HOME/.fasd-init-bash"
-    if [ "$(command -v fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache" ]; then
-      fasd --init posix-alias bash-hook bash-ccomp bash-ccomp-install >| "$fasd_cache"
+    fasder_cache="$HOME/.fasd-init-bash"
+    if [ "$(command -v fasder)" -nt "$fasder_cache" -o ! -s "$fasder_cache" ]; then
+      fasder --init posix-alias bash-hook bash-ccomp bash-ccomp-install >| "$fasder_cache"
     fi
-    source "$fasd_cache"
-    unset fasd_cache
+    source "$fasder_cache"
+    unset fasder_cache
 
-Optionally, if you can also source `fasd` if you want `fasd` to be a shell
+Optionally, you can also source `fasder` if you want `fasder` to be a shell
 function instead of an executable.
 
-You can tweak initialization code. For instance, if you want to use "c"
-instead of "z" to do directory jumping. You run the code below:
+You can tweak the initialization code. For instance, if you want to use "c"
+instead of "z" to do directory jumping, run the code below:
 
     # function to execute built-in cd
-    fasd_cd() {
+    fasder_cd() {
       if [ $# -le 1 ]; then
-        fasd "$@"
+        fasder "$@"
       else
-        local _fasd_ret="$(fasd -e echo "$@")"
-        [ -z "$_fasd_ret" ] && return
-        [ -d "$_fasd_ret" ] && cd "$_fasd_ret" || echo "$_fasd_ret"
+        local _fasder_ret="$(fasder -e echo "$@")"
+        [ -z "$_fasder_ret" ] && return
+        [ -d "$_fasder_ret" ] && cd "$_fasder_ret" || echo "$_fasder_ret"
       fi
     }
-    alias c='fasd_cd -d' # `-d' option present for bash completion
+    alias c='fasder_cd -d' # `-d' option present for bash completion
 
