@@ -3,35 +3,35 @@
 A descendant of Wei Dai's [fasd] (https://github.com/clvv/fasd) project offering
 improved performance on Cygwin/Windows and (eventually) more... 
 
-_This document is adapted from the README for the original fasd project._
+###### This document is adapted from the README for the original fasd project.
 
-Fasder (pronounced similar to "faster") is a command-line productivity booster.
-Fasder offers quick access to files and directories for POSIX shells. It is a
-direct descendant of [fasd] (https://github.com/clvv/fasd) which was
+_Fasder_ (approximate pronunciation "faster") is a command-line productivity
+booster that offers quick jumping and naming access to files and directories
+at the POSIX shell prompt. _Fasder_ tracks your command history to give priority
+access to the files you've accessed most often or most recently.
+_Fasder_ is a direct descendant of [fasd] (https://github.com/clvv/fasd) which was
 inspired by tools like [autojump](https://github.com/joelthelion/autojump),
-[z](http://github.com/rupa/z) and [v](https://github.com/rupa/v). Fasder keeps
-track of the files and directories you have accessed, so that you can quickly
-reference them in the command line.
+[z](http://github.com/rupa/z) and [v](https://github.com/rupa/v). 
 
-_fasder_ (and its ancestor _fasd_) takes its name from the convenient, default
+_fasder_ (and its ancestor _fasd_) takes its name from the convenient default
 aliases that provide most of _fasder_'s functionality:
 * `f`(files),
-* `a`(files/directories)
-* `s`(show/search/select)
+* `a`(all, i.e. files/directories)
+* `s`(show/search/select interactively)
 * `d`(directories).
 
-Fasder ranks files and directories by "frecency," that is, by both "frequency" and
-"recency." The term "frecency" was first coined by Mozilla and used in Firefox
+_Fasder_ ranks files and directories by "frecency," that is, by a combination of
+"frequency" and "recency." The term "frecency" was coined by Mozilla and is
+used in Firefox
 ([link](https://developer.mozilla.org/en/The_Places_frecency_algorithm)).
 
 # Introduction
 
-If you use your shell to navigate and launch applications, fasder can help you do
-so more efficiently. With fasder, you can open files regardless from any
-directory. Fasder can find a "frecent"
-file or directory and open it with the command you specify. Here are some
-hypothetical situations where you can type in the command on the left and fasder
-will expand your entry to the command on the right. Pretty magical, huh?
+If you use your shell to navigate and launch applications, _fasder_ can help you
+do so more efficiently. With _fasder_, you can open files from any directory.
+_Fasder_ can find a "frecent" file or directory and open it with the command you
+specify. Here are some scenarios where the _fasder_ command on the left 
+will expand to the shell command on the right. Pretty magical, huh?
 
 ```
   v def conf       =>     vim /some/awkward/path/to/type/default.conf
@@ -42,7 +42,7 @@ will expand your entry to the command on the right. Pretty magical, huh?
   vim `f rc conf`  =>     vim /etc/rc.conf
 ```
 
-Fasder comes with some useful aliases by default:
+_Fasder_ comes with some useful aliases by default:
 
 ```sh
 alias a='fasder -a'        # any
@@ -95,7 +95,7 @@ If you want more control over what gets into your shell environment, you can
 pass a customized set of arguments to `fasder --init`.
 
 ```
-zsh-hook             # define _fasd_preexec and add it to zsh preexec array
+zsh-hook             # define _fasder_preexec and add it to zsh preexec array
 zsh-ccomp            # zsh command mode completion definitions
 zsh-ccomp-install    # setup command mode completion for zsh
 zsh-wcomp            # zsh word mode completion definitions
@@ -135,9 +135,9 @@ You can tweak the initialization code. For instance, if you want to use "c"
 instead of "z" to do directory jumping, you can use the alias below:
 
 ```sh
-alias c='fasd_cd -d'
+alias c='fasder_cd -d'
 # `-d` option present for bash completion
-# function fasd_cd is defined in posix-alias
+# function fasder_cd is defined in posix-alias
 ```
 
 After you install fasder, warm up the fasder database by opening some files
@@ -156,7 +156,7 @@ z foo           # cd into the most frecent directory matching foo
 open `sf pdf`   # interactively select a file matching pdf and launch `open`
 ```
 
-You should add your own aliases to fully utilize the power of fasder. Here are
+You can add your own aliases to fully utilize the power of fasder. Here are
 some examples to get you started:
 
 ```sh
@@ -165,10 +165,10 @@ alias m='f -e mplayer' # quick opening files with mplayer
 alias o='a -e xdg-open' # quick opening files with xdg-open
 ```
 
-If you're using bash, you have to call `_fasd_bash_hook_cmd_complete` to make
+If you're using bash, you have to call `_fasder_bash_hook_cmd_complete` to make
 completion work. For instance:
 
-    _fasd_bash_hook_cmd_complete v m j o
+    _fasder_bash_hook_cmd_complete v m j o
 
 You can select an entry in the list of matching files.
 
@@ -196,9 +196,9 @@ Tips:
 # How It Works
 
 When you initialize the fasder system (typically through your shell config
-scripts), fasder creates a hook function which will be executed upon 
-completion of every shell command. The hook will scan your commands for file
-and directory names, adding each one to its database. 
+scripts), fasder creates a hook function which will be executed after 
+every shell command. The hook will scan your commands for file
+and directory names and add them to its database. 
 
 # Compatibility
 
@@ -206,7 +206,7 @@ Fasder's basic functionalities are POSIX compliant, meaning that you should be
 able to _use_ fasder in all POSIX compliant shells. Your shell needs to support
 command substitution in `$PS1` in order to automatically track your
 commands and files. This feature is not specified by the POSIX standard, but
-is present in many POSIX compliant shells. In shells without
+is present in many POSIX-compliant shells. In shells without
 prompt command or prompt command substitution (csh for instance), you can add
 entries manually with `fasder -A`. You are most welcome to contribute shell
 initialization code for shells not yet supported.
@@ -264,8 +264,8 @@ triggered by any command line argument that starts with `,` (all), `f,`
     $ mv index.html d,www<Tab>
     $ mv index.html /var/www/
 
-There are also three zle widgets: `fasd-complete`, `fasd-complete-f`,
-`fasd-complete-d`. You can bind them to any keybindings you like:
+There are also three zle widgets: `fasder-complete`, `fasder-complete-f`,
+`fasder-complete-d`. You can bind them to any keybindings you like:
 
 ```sh
 bindkey '^X^A' fasder-complete    # C-x C-a to do fasder-complete (files and directories)
@@ -397,14 +397,14 @@ for example. low-hanging fruit here too.
 * The issues queue of the original fasd project contains some unresolved issues
 we might wish to address here.
 * Develop a more formal strategy for testing. There are two classes of use cases:
-(1) the hidden operation of the \_fasder_prompt_func at the command line and 
-(2) explicit invocations of fasder, often through its short aliases. Regarding
+(1) the hidden action of the \_fasder_prompt_func (the hook) at the prompt and 
+(2) explicit invocations of fasder, or its short aliases. Regarding
 the former, our script's dependency on a `PROMPT_COMMAND` whose exact meaning
 changes whenever we edit the script creates a challenging situation akin to
 the Observer Effect familiar to physicists. As a workaround, we could
 structure our test rig to invoke "fasder --proc <cmd>" directly for each test
 case while we monitor the effects this has on a suitably mocked-up data file.
 The use cases wherein fasder is explicitly called should be easier to test.
-* Original fasd contains notes about downloading it through package managers 
+* The original fasd contains notes about downloading it through package managers 
 or the project website. Consider pursuing either or both of these for fasder.
 
