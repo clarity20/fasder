@@ -28,7 +28,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-fasd() {
+fasder() {
 
   # make zsh do word splitting inside this function
   [ "$ZSH_VERSION" ] && emulate sh && setopt localoptions
@@ -355,7 +355,7 @@ EOS
     case " $_FASD_IGNORE " in
       *\ $1\ *) return;;
     esac
-    shift; fasd --add "$@" # add all arguments except command
+    shift; fasder --add "$@" # add all arguments except command
     ;;
 
   --add|-A)      # Add entries to the DB {{{1
@@ -557,7 +557,7 @@ EOS
 
     # cat all backends
     local each _fasd_data; for each in $_FASD_BACKENDS; do
-      fasd --backend $each
+      fasder --backend $each
       [[ -n $_fasd_data ]] && _fasd_data+=$'\n'
       _fasd_data+=$backendBuffer
     done
@@ -756,7 +756,7 @@ EOS
           set -- $2
           local lst=1 r=r comp=1;;
       --query|--add|--delete|-A|-D)   # {{{2
-          fasd "$@"
+          fasder "$@"
           return $?;;
       --version)    # {{{2
           [ -z "$comp" ] && echo "1.0.1" && return;;
@@ -838,7 +838,7 @@ fasder [-A|-D] [paths ...]
     fnd="${fnd# }"
 
     local res
-    res="$(fasd --query 2>> "$_FASD_SINK")" # query the database
+    res="$(fasder --query 2>> "$_FASD_SINK")" # query the database
     [ $? -gt 0 ] && return
     if [ 0 -lt ${_fasd_i:-0} ] 2>> "$_FASD_SINK"; then
       res="$(printf %s\\n "$res" | sort -n${R} | \
@@ -864,7 +864,7 @@ fasder [-A|-D] [paths ...]
       return
     fi
     if [ "$res" ]; then
-      fasd --add "$res"
+      fasder --add "$res"
       [ -z "$exec" ] && exec='printf %s\n'
       $exec "$res"
     fi
@@ -872,11 +872,7 @@ fasder [-A|-D] [paths ...]
   esac
 }
 
-fasder() {
-  fasd "$@"
-}
-
-fasd --init env
+fasder --init env
 
 case $- in
   *i*) ;; # assume being sourced, do nothing
@@ -884,7 +880,7 @@ case $- in
     if [ -x "$_FASD_SHELL" -a -z "$_FASD_SET" ]; then
       _FASD_SET=1 exec $_FASD_SHELL "$0" "$@"
     else
-      fasd "$@"
+      fasder "$@"
     fi;;
 esac
 
