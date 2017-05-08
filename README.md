@@ -1,15 +1,13 @@
 # Fasder
 
-A descendant of Wei Dai's [fasd] (https://github.com/clvv/fasd) project offering
+A descendant of Wei Dai's [fasd](https://github.com/clvv/fasd) project offering
 improved performance on Cygwin/Windows and (eventually) more... 
-
-###### This document is adapted from the README for the original fasd project.
 
 _Fasder_ (approximate pronunciation "faster") is a command-line productivity
 booster that offers quick jumping and naming access to files and directories
 at the POSIX shell prompt. _Fasder_ tracks your command history to give priority
 access to the files you've accessed most often or most recently.
-_Fasder_ is a direct descendant of [fasd] (https://github.com/clvv/fasd) which was
+_Fasder_ is a direct descendant of [fasd](https://github.com/clvv/fasd) which was
 inspired by tools like [autojump](https://github.com/joelthelion/autojump),
 [z](http://github.com/rupa/z) and [v](https://github.com/rupa/v). 
 
@@ -377,15 +375,16 @@ _FASD_SINK="$HOME/.fasd.log"
 
 # COPYING
 
-Fasder is adapted from Wei Dai's [fasd] (https://github.com/clvv/fasd) project.
+Fasder is adapted from Wei Dai's [fasd](https://github.com/clvv/fasd) project.
 Fasd is based on code from [z](https://github.com/rupa/z) by
 rupa deadwyler under the WTFPL license. Most if not all of the code has been
 rewritten. Fasder is licensed under the "MIT/X11" license.
 
+###### This document is adapted from the README for the original fasd project.
+
 ### TODO
 
-* Refashion this TODO list as a project issues page.
-* Add topic flags: command-line-tool, bash, ...
+* Discuss the optimization strategies employed.
 * Discuss the remaining bottlenecks in the prompt hook: the call to mapfile,
 the "heaviness" of forking a process under Cygwin, and the extra burden when 
 context-switching into a Cygwin shell (especially the DLLs) from the outside.
@@ -393,9 +392,11 @@ context-switching into a Cygwin shell (especially the DLLs) from the outside.
 and `--query` options. For the other options, there is plenty low-hanging
 fruit waiting to be picked.
 * Style issues abound: comments and variable names can be made better,
-for example. low-hanging fruit here too.
-* The issues queue of the original fasd project contains some unresolved issues
-we might wish to address here.
+for example. Sub-functions can be extracted. Low-hanging fruit here too.
+* Implement a --clean option to delete duplicate entries and entries no longer
+present in the filesystem
+* Inventory the open issues and PRs of the original fasd project
+for anything we might wish to address here.
 * Develop a more formal strategy for testing. There are two classes of use cases:
 (1) the hidden action of the \_fasder_prompt_func (the hook) at the prompt and 
 (2) explicit invocations of fasder, or its short aliases. Regarding
