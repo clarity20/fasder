@@ -154,8 +154,7 @@ EOS
       bash-hook)            # bash prompt hook {{{2
         cat <<EOS
 _fasder_prompt_func() {
-    local cmd=\$(history 1)
-    [[ "\$cmd" =~ ^[\ ]*[0-9]*[\ ]*(.*) ]] && cmd=\${BASH_REMATCH[1]}
+    local cmd=\$(fc -ln -1)
   eval "fasder --proc \$cmd" >> "$_FASD_SINK" 2>&1
 }
 
