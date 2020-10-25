@@ -382,6 +382,10 @@ rewritten. Fasder is licensed under the "MIT/X11" license.
 
 ###### This document is adapted from the README for the original fasd project.
 
+# Please see also:
+
+[Thoughts about a faster "fasder"](https://github.com/clarity20/fasder/wiki/Thoughts-about-a-faster-%22fasder%22)
+
 ### TODO
 
 * Discuss the optimization strategies employed.
@@ -389,23 +393,23 @@ rewritten. Fasder is licensed under the "MIT/X11" license.
 the "heaviness" of forking a process under Cygwin, and the extra burden when 
 context-switching into a Cygwin shell (especially the DLLs) from the outside.
 * Optimization work thus far has focused on the prompt hook and the `--add`
-and `--query` options. For the other options, there is plenty low-hanging
-fruit waiting to be picked.
-* Style issues abound: comments and variable names can be made better,
+and `--query` options. For the other options, there is still plenty of low-hanging
+fruit.
+* There are many style issues: Comments and variable names can be made better,
 for example. Sub-functions can be extracted. Low-hanging fruit here too.
 * Implement a --clean option to delete duplicate entries and entries no longer
 present in the filesystem
 * Inventory the open issues and PRs of the original fasd project
 for anything we might wish to address here.
-* Develop a more formal strategy for testing. There are two classes of use cases:
-(1) the hidden action of the \_fasder_prompt_func (the hook) at the prompt and 
-(2) explicit invocations of fasder, or its short aliases. Regarding
-the former, our script's dependency on a `PROMPT_COMMAND` whose exact meaning
-changes whenever we edit the script creates a challenging situation akin to
-the Observer Effect familiar to physicists. As a workaround, we could
+* Develop a more thorough, systematic testing process. There are two classes of use cases:
+(1) the hidden action of the \_fasder_prompt_func (the prompt hook) and 
+(2) the explicit invocation of fasder or its short aliases. Regarding the former,
+the script's dependency on a `PROMPT_COMMAND` whose exact behavior
+changes whenever we edit the script makes testing challenging; the situation is akin to
+the observer effect familiar to physicists. As a workaround, we could
 structure our test rig to invoke "fasder --proc <cmd>" directly for each test
 case while we monitor the effects this has on a suitably mocked-up data file.
-The use cases wherein fasder is explicitly called should be easier to test.
+OTOH, the "type 2" use cases wherein fasder is explicitly called should be easier to test.
 * The original fasd contains notes about downloading it through package managers 
 or the project website. Consider pursuing either or both of these for fasder.
 
